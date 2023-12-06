@@ -47,7 +47,9 @@ void executeCommand(char *command)
 		/* Child process */
 		/* Debugging prints */
 		printf("Executable: %s\n", executable);
-        for (int j = 0; arguments[j] != NULL; ++j) {
+		int j;
+
+        for (j = 0; arguments[j] != NULL; ++j) {
             printf("Argument %d: %s\n", j, arguments[j]);
         }
 
