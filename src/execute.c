@@ -10,6 +10,10 @@ void executeCommand(char* command) {
     DWORD exitCode;
     LPVOID errorMsg;
 
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
     char* executable;
     char* arguments[10];
     int i;  /*Declare i at the beginning*/
@@ -31,10 +35,6 @@ void executeCommand(char* command) {
             break;
         }
     }
-
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
 
     if (!CreateProcess(NULL, executable, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         fprintf(stderr, ANSI_COLOR_RED "Error creating process: %lu\n" ANSI_COLOR_RESET, GetLastError());
