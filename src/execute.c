@@ -94,7 +94,7 @@ static void searchAndExecute(char *command)
 
 		if (access(fullPath, X_OK) == 0)
 		{
-			executeChild(fullPath);
+			executeChild(fullPath, argv);
 		}
 
 		free(fullPath);
