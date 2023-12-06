@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-/*#include <windows.h> Include only for Windows */
+#ifdef _WIN32
+#include "windows.h"
+#endif
 #include "shell.h"
 
 void executeCommand(char* command) {
