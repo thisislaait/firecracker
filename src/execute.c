@@ -22,7 +22,8 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
 		fprintf(stderr, "Error: Unexpected end of input\n");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok(command, " ");
+	argv[i++] = command;
+	token = strtok(NULL, " ");
 	while (token != NULL && i < maxArgs - 1)
 	{
 		argv[i++] = token;
@@ -78,7 +79,6 @@ static void searchAndExecute(char *command)
 	char *token = strtok(path, ":");
 	char *fullPath;
 	char *argv[20];
-	int commandLen = strlen(command);
 
 	while (token != NULL)
 	{
@@ -92,7 +92,6 @@ static void searchAndExecute(char *command)
 		strcpy(fullPath, token);
 		strcat(fullPath, "/");
 		strcat(fullPath, command);
-		printf("Full path: %s\n", fullPath);
 
 		if (access(fullPath, X_OK) == 0)
 		{
