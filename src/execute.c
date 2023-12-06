@@ -36,9 +36,9 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
  * @full_path: The full path to the executable.
  * @argv: The array of arguments.
  */
-static void executeChild(char *full_path, char *argv[])
+static void executeChild(char *argv[])
 {
-	execvp(full_path, argv);
+	execvp(argv[0], argv);
 	/* If execvp fails */
 	perror("Error executing command");
 	exit(EXIT_FAILURE);
@@ -61,10 +61,48 @@ static void executeParent(pid_t pid)
 		{
 			fprintf(stderr, "Command exited with code %d\n", exitCode);
 		}
-	} else
+	}
+	else
 	{
 		fprintf(stderr, "Command did not exit successfully\n");
 	}
+}
+
+/**
+ * searchAndExecute - Searches for the executable in the PATH.
+ * @command: The command to execute.
+*/
+static void searchAndExecute(char *command)
+{
+	char *path = getenv("PATH");
+	char *token = strtok(path, ":");
+	char *fullPath;
+	int commandLen = strlen(command);
+
+	while (token != NULL)
+	{
+		fullPath = malloc(strlen(token) + commandLen + 2);
+		if (fullPath ==NULL)
+		{
+			perror("Malloc failed");
+			exit(EXIT_FAILURE);
+		}
+
+		strcpy(fullPath, token);
+		strcat(fullPath, "/");
+		strcat(fullPath, command);
+
+		if (access(fullPath, X_OK) == 0)
+		{
+			executeChild(fullPath);
+		}
+
+		free(fullPath);
+		token = strtok(NULL, ":");
+	}
+
+	fprintf(stderr, "Command not found: %s\n", command);
+	exit(EXIT_FAILURE);
 }
 
 /**
@@ -88,34 +126,11 @@ void executeCommand(char *command)
 	{
 		perror("Error forking process");
 		exit(EXIT_FAILURE);
-	} else if (pid == 0)
+	}
+	else if (pid == 0)
 	{
 		/* Child process */
-		/* Check if the executable is in the PATH */
-		char *path = getenv("PATH");
-		char *path_copy = strdup(path);
-		char *path_token = strtok(path_copy, ";");
-
-		while (path_token !=NULL)
-		{
-			char *full_path = malloc(strlen(path_token) + 
-			strlen(argv[0]) + 2);
-			sprintf(full_path, "%s/%s", path_token, argv[0]);
-
-			if (access(full_path, X_OK) == 0)
-			{
-				/* Executable found in the current PATH */
-				executeChild(full_path, argv);
-			}
-
-			free(full_path);
-			path_token = strtok(NULL, ":");
-		}
-
-		/* If the loop completes, the executable was not found in the PATH */
-		fprintf(stderr, "Command not found: %s\n", argv[0]);
-		free(path_copy);
-		exit(EXIT_FAILURE);
+		searchAndExecute(argv[0]);
 	}
 	else
 	{
