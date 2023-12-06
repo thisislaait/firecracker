@@ -102,7 +102,7 @@ static void searchAndExecute(char *command)
 			{
 				printf("%s ", argv[i]);
 			}
-			printf("\n")
+			printf("\n");
 			executeChild(argv);
 		}
 
