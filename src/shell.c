@@ -39,10 +39,8 @@ int main(void)
 				printf(ANSI_COLOR_GREEN "Goodbye! Exiting the shell.\n"
 				ANSI_COLOR_RESET);
 				break;
-			} else
-			{
-				executeCommand(input);
 			}
+			executeCommand(input);
 		}
 		free(input);
 	}
