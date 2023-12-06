@@ -14,22 +14,21 @@
  */
 static void splitCommand(char *command, char *argv[], int maxArgs)
 {
-    char *token;
-    int i = 0;
+	char *token;
+	int i = 0;
 
-    if (command == NULL)
+	if (command == NULL)
 	{
-        fprintf(stderr, "Error: Unexpected end of input\n");
-        exit(EXIT_FAILURE);
-    }
-
-    token = strtok(command, " ");
-    while (token != NULL && i < maxArgs - 1)
+		fprintf(stderr, "Error: Unexpected end of input\n");
+		exit(EXIT_FAILURE);
+	}
+	token = strtok(command, " ");
+	while (token != NULL && i < maxArgs - 1)
 	{
-        argv[i++] = token;
-        token = strtok(NULL, " ");
-    }
-    argv[i] = NULL; /* Null-terminate the argument list */
+		argv[i++] = token;
+		token = strtok(NULL, " ");
+	}
+	argv[i] = NULL; /* Null-terminate the argument list */
 }
 
 /**
@@ -38,11 +37,10 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
  */
 static void executeChild(char *argv[])
 {
-    execvp(argv[0], argv);
-
-    /* If execvp fails */
-    perror("Error executing command");
-    exit(EXIT_FAILURE);
+	execvp(argv[0], argv);
+	/* If execvp fails */
+	perror("Error executing command");
+	exit(EXIT_FAILURE);
 }
 
 /**
@@ -51,22 +49,21 @@ static void executeChild(char *argv[])
  */
 static void executeParent(pid_t pid)
 {
-    int status;
+	int status;
 
-    waitpid(pid, &status, 0);
-
-    if (WIFEXITED(status))
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
 	{
-        int exitCode = WEXITSTATUS(status);
+		int exitCode = WEXITSTATUS(status);
 
-        if (exitCode != 0)
+		if (exitCode != 0)
 		{
-            fprintf(stderr, "Command exited with code %d\n", exitCode);
-        }
-    } else
+			fprintf(stderr, "Command exited with code %d\n", exitCode);
+		}
+	} else
 	{
-        fprintf(stderr, "Command did not exit successfully\n");
-    }
+		fprintf(stderr, "Command did not exit successfully\n");
+	}
 }
 
 /**
@@ -80,24 +77,24 @@ static void executeParent(pid_t pid)
  */
 void executeCommand(char *command)
 {
-    char *argv[20]; /* Adjust the array size as needed */
-    pid_t pid;
+	char *argv[20]; /* Adjust the array size as needed */
+	pid_t pid;
 
-    splitCommand(command, argv, 20);
-    pid = fork();
+	splitCommand(command, argv, 20);
 
-    if (pid == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-        perror("Error forking process");
-        exit(EXIT_FAILURE);
-    } else if (pid == 0)
+		perror("Error forking process");
+		exit(EXIT_FAILURE);
+	} else if (pid == 0)
 	{
-        /* Child process */
-        executeChild(argv);
-    } else
+		/* Child process */
+		executeChild(argv);
+	} else
 	{
-        /* Parent process */
-        executeParent(pid);
-    }
+		/* Parent process */
+		executeParent(pid);
+	}
 }
 
