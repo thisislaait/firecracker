@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h> /* Include only for Windows */
+/*#include <windows.h> Include only for Windows */
 #include "shell.h"
 
 void executeCommand(char* command) {
