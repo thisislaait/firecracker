@@ -36,9 +36,9 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
  * @full_path: The full path to the executable.
  * @argv: The array of arguments.
  */
-static void executeChild(char *argv[])
+static void executeChild(char *path)
 {
-	execvp(argv[0], argv);
+	execvp(path, path, NULL);
 	/* If execvp fails */
 	perror("Error executing command");
 	exit(EXIT_FAILURE);
