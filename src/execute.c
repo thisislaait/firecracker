@@ -97,13 +97,9 @@ static void searchAndExecute(char *command)
 		if (access(fullPath, X_OK) == 0)
 		{
 			splitCommand(fullPath, argv, 20);
-			printf("Arguments: ");
-			for (int i = 0; argv[i] != NULL; i++)
-			{
-				printf("%s ", argv[i]);
-			}
-			printf("\n");
 			executeChild(argv);
+			free(fullPath);
+			return;
 		}
 
 		free(fullPath);
