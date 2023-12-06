@@ -143,7 +143,7 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		executeChild(argv);
+		searchAndExecute(argv[0]);
 	}
 	else
 	{
