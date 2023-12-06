@@ -143,7 +143,6 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		extern char **environ;
 		executeChild(argv[0], argv);
 	}
 	else
