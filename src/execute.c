@@ -77,6 +77,7 @@ static void searchAndExecute(char *command)
 	char *path = getenv("PATH");
 	char *token = strtok(path, ":");
 	char *fullPath;
+	char *argv[20];
 	int commandLen = strlen(command);
 
 	while (token != NULL)
