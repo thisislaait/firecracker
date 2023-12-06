@@ -7,7 +7,6 @@
 #include <windows.h>
 #endif
 
-#ifdef _WIN32
 void executeCommand(char* command) {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -60,4 +59,4 @@ void executeCommand(char* command) {
     }
 
 }
-#endif  // _WIN32
+
