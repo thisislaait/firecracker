@@ -24,6 +24,7 @@ void executeCommand(char *command)
 	pid_t pid = fork();
 
 	int i = 0;
+	int j;
 
 	if (command == NULL)
 	{
@@ -47,7 +48,6 @@ void executeCommand(char *command)
 		/* Child process */
 		/* Debugging prints */
 		printf("Executable: %s\n", executable);
-		int j;
 
         for (j = 0; arguments[j] != NULL; ++j) {
             printf("Argument %d: %s\n", j, arguments[j]);
