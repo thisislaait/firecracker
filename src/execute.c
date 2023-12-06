@@ -36,9 +36,9 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
  * @full_path: The full path to the executable.
  * @argv: The array of arguments.
  */
-static void executeChild(char *path, char *argv[])
+static void executeChild(char *argv[])
 {
-	execvp(path, argv[0], argv[1], argv[2], argv[3], argv[4], NULL);
+	execvp(argv[0], argv);
 	/* If execvp fails */
 	perror("Error executing command");
 	exit(EXIT_FAILURE);
@@ -71,7 +71,7 @@ static void executeParent(pid_t pid)
 /**
  * searchAndExecute - Searches for the executable in the PATH.
  * @command: The command to execute.
-*/
+
 static void searchAndExecute(char *command)
 {
 	char *path = getenv("PATH");
@@ -104,7 +104,7 @@ static void searchAndExecute(char *command)
 
 	fprintf(stderr, "Command not found: %s\n", command);
 	exit(EXIT_FAILURE);
-}
+}*/
 
 /**
  * executeCommand - Executes a shell command.
@@ -131,7 +131,7 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		searchAndExecute(argv[0]);
+		executeChild(argv);
 	}
 	else
 	{
