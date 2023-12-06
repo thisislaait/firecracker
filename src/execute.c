@@ -122,18 +122,6 @@ void executeCommand(char *command)
 
 	splitCommand(command, argv, 20);
 
-	if (strcmp(argv[0], "env") == 0)
-	{
-		/* If the command is "env", print the current environment*/
-		char **env == environ;
-		while (*env !=NULL)
-		{
-			printf("%s\n", *env);
-			env++;
-		}
-		exit(EXIT_SUCCESS);
-	}
-
 	pid = fork();
 	if (pid == -1)
 	{
