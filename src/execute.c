@@ -93,7 +93,7 @@ static void searchAndExecute(char *command)
 		strcat(fullPath, "/");
 		strcat(fullPath, command);
 
-		if (access(fullPath, X_OK) == 0)
+		if (access(fullPath, F_OK) == 0)
 		{
 			splitCommand(fullPath, argv, 20);
 			executeChild(argv);
