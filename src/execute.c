@@ -33,12 +33,12 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
 
 /**
  * executeChild - Executes the command in the child process.
- * @full_path: The full path to the executable.
+ * @path: The full path to the executable.
  * @argv: The array of arguments.
  */
 static void executeChild(char *path, char *argv[])
 {
-	execlp(path, argv[0], argv[1], argv[2], argv[3], argv[4], NULL);
+	execvp(path, argv);
 	/* If execvp fails */
 	perror("Error executing command");
 	exit(EXIT_FAILURE);
@@ -122,6 +122,18 @@ void executeCommand(char *command)
 
 	splitCommand(command, argv, 20);
 
+	if (strcmp(argv[0], "env") == 0)
+	{
+		/* If the command is "env", print the current environment*/
+		char **env == environ;
+		while (*env !=NULL)
+		{
+			printf("%s\n", *env);
+			env++;
+		}
+		exit(EXIT_SUCCESS);
+	}
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -131,7 +143,8 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		searchAndExecute(argv[0]);
+		extern char **environ;
+		executeChild(argv[0], argv);
 	}
 	else
 	{
