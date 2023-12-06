@@ -100,7 +100,7 @@ static void searchAndExecute(char *command)
 			printf("Arguments: ");
 			for (int i = 0; argv[i] != NULL; i++)
 			{
-				printf("%s ". argv[i]);
+				printf("%s ", argv[i]);
 			}
 			printf("\n")
 			executeChild(argv);
