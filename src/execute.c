@@ -33,11 +33,12 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
 
 /**
  * executeChild - Executes the command in the child process.
+ * @full_path: The full path to the executable.
  * @argv: The array of arguments.
  */
-static void executeChild(char *argv[])
+static void executeChild(char *full_path, char *argv[])
 {
-	execvp(argv[0], argv);
+	execvp(full_path, argv);
 	/* If execvp fails */
 	perror("Error executing command");
 	exit(EXIT_FAILURE);
@@ -90,8 +91,32 @@ void executeCommand(char *command)
 	} else if (pid == 0)
 	{
 		/* Child process */
-		executeChild(argv);
-	} else
+		/* Check if the executable is in the PATH */
+		char *path = getenv("PATH");
+		char *path_copy = strdup(path);
+		char *path_token = strtok(path_copy, ";");
+
+		while (path_token !=NULL)
+		{
+			char *full_path = malloc(strlen(path_token) + 
+			strlen(argv[0]) + 2);
+			sprintf(full_path, "%s/%s", path_token, argv[0]);
+
+			if (access(full_path, X_OK) == 0)
+			{
+				/* Executable found in the current PATH */
+			}
+
+			free(full_path);
+			path_token = strtok(NULL, ":");
+		}
+
+		/* If the loop completes, the executable was not found in the PATH */
+		fprintf(stderr, "Command not found: %s\n", argv[0]);
+		free(path_copy);
+		exit(EXIT_FAILURE);
+	}
+	else
 	{
 		/* Parent process */
 		executeParent(pid);
