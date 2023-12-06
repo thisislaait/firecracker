@@ -82,7 +82,7 @@ static void searchAndExecute(char *command)
 
 	while (token != NULL)
 	{
-		fullPath = malloc(strlen(token) + commandLen + 2);
+		fullPath = malloc(strlen(token) + strlen(command) + 2);
 		if (fullPath == NULL)
 		{
 			perror("Malloc failed");
