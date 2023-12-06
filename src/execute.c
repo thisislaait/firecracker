@@ -125,8 +125,8 @@ void executeCommand(char *command)
 	if (strcmp(argv[0], "env") == 0)
 	{
 		/* If the command is "env", print the current environment*/
-		char **env == environ;
-		while (*env !=NULL)
+		char **env = environ;
+		while (*env != NULL)
 		{
 			printf("%s\n", *env);
 			env++;
