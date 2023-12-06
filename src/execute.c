@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef _WIN32
-#include "windows.h"
-#endif
+#include <string.h>
 #include "shell.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 void executeCommand(char* command) {
+#ifdef _WIN32
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     DWORD exitCode;
@@ -15,30 +18,18 @@ void executeCommand(char* command) {
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    char* executable;
+    /* Split the command into executable and arguments */
+    char* executable = strtok(command, " ");
     char* arguments[10];
-    int i;  /*Declare i at the beginning*/
 
-    executable = strtok(command, " ");
-
-    if (!executable) {
-        fprintf(stderr, ANSI_COLOR_RED "Error: No command specified\n" ANSI_COLOR_RESET);
-        return;
+    int i = 0;
+    while (i < 9 && (arguments[i] = strtok(NULL, " ")) != NULL) {
+        i++;
     }
-
-    for (i = 0; i < 10; i++) {
-        arguments[i] = NULL;
-    }
-
-    for (i = 0; i < 9; i++) {
-        arguments[i] = strtok(NULL, " ");
-        if (!arguments[i]) {
-            break;
-        }
-    }
+    arguments[i] = NULL; /* Null-terminate the argument list */
 
     if (!CreateProcess(NULL, executable, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-        fprintf(stderr, ANSI_COLOR_RED "Error creating process: %lu\n" ANSI_COLOR_RESET, GetLastError());
+        fprintf(stderr, "Error creating process: %lu\n", GetLastError());
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL,
@@ -49,7 +40,7 @@ void executeCommand(char* command) {
             NULL
         );
 
-        fprintf(stderr, ANSI_COLOR_RED "Error message: %s\n" ANSI_COLOR_RESET, (LPSTR)errorMsg);
+        fprintf(stderr, "Error message: %s\n", (LPSTR)errorMsg);
         LocalFree(errorMsg);
         exit(EXIT_FAILURE);
     }
@@ -57,7 +48,7 @@ void executeCommand(char* command) {
     WaitForSingleObject(pi.hProcess, INFINITE);
 
     if (!GetExitCodeProcess(pi.hProcess, &exitCode)) {
-        fprintf(stderr, ANSI_COLOR_RED "Error getting exit code: %lu\n" ANSI_COLOR_RESET, GetLastError());
+        fprintf(stderr, "Error getting exit code: %lu\n", GetLastError());
         exit(EXIT_FAILURE);
     }
 
@@ -65,7 +56,8 @@ void executeCommand(char* command) {
     CloseHandle(pi.hThread);
 
     if (exitCode != 0) {
-        fprintf(stderr, ANSI_COLOR_RED "Command exited with code %lu\n" ANSI_COLOR_RESET, exitCode);
+        fprintf(stderr, "Command exited with code %lu\n", exitCode);
     }
+
 }
 
