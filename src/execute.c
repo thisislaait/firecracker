@@ -71,19 +71,19 @@ static void executeParent(pid_t pid)
 /**
  * searchAndExecute - Searches for the executable in the PATH.
  * @command: The command to execute.
-
+*/
 static void searchAndExecute(char *command)
 {
 	char *path = getenv("PATH");
 	char *token = strtok(path, ":");
 	char *fullPath;
-	char *argv;
+	char *argv[20];
 	int commandLen = strlen(command);
 
 	while (token != NULL)
 	{
 		fullPath = malloc(strlen(token) + commandLen + 2);
-		if (fullPath ==NULL)
+		if (fullPath == NULL)
 		{
 			perror("Malloc failed");
 			exit(EXIT_FAILURE);
@@ -95,7 +95,8 @@ static void searchAndExecute(char *command)
 
 		if (access(fullPath, X_OK) == 0)
 		{
-			executeChild(fullPath, argv);
+			splitCommand(fullPath, argv, 20);
+			executeChild(argv);
 		}
 
 		free(fullPath);
@@ -104,7 +105,7 @@ static void searchAndExecute(char *command)
 
 	fprintf(stderr, "Command not found: %s\n", command);
 	exit(EXIT_FAILURE);
-}*/
+}
 
 /**
  * executeCommand - Executes a shell command.
@@ -117,10 +118,7 @@ static void searchAndExecute(char *command)
  */
 void executeCommand(char *command)
 {
-	char *argv[20]; /* Adjust the array size as needed */
 	pid_t pid;
-
-	splitCommand(command, argv, 20);
 
 	pid = fork();
 	if (pid == -1)
@@ -131,7 +129,7 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		executeChild(argv);
+		searchAndExecuteChild(command);
 	}
 	else
 	{
