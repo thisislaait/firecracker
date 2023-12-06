@@ -25,9 +25,9 @@ void executeCommand(char *command)
 
 	int i = 0;
 
-	if (command == NULL)
+	if (executable == NULL)
 	{
-		fprintf(stderr, "Error: Unexpected end of input\n");
+		fprintf(stderr, "Error: Empty command\n");
 		exit(EXIT_FAILURE);
 	}
 
