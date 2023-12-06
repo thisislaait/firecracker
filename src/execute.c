@@ -25,9 +25,9 @@ void executeCommand(char *command)
 
 	int i = 0;
 
-	if (executable == NULL)
+	if (command == NULL)
 	{
-		fprintf(stderr, "Error: Empty command\n");
+		fprintf(stderr, "Error: Unexpected end of input\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -45,6 +45,12 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
+		/* Debugging prints */
+		printf("Executable: %s\n", executable);
+        for (int j = 0; arguments[j] != NULL; ++j) {
+            printf("Argument %d: %s\n", j, arguments[j]);
+        }
+
 		execvp(executable, arguments);
 
 		/* If execvp fails */
