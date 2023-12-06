@@ -1,4 +1,3 @@
-// execute.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,25 +6,28 @@
 #include <sys/wait.h>
 #include "shell.h"
 
-void executeCommand(char* command) {
+void executeCommand(char* command) 
+{
+    /* Split the command into executable and arguments */
+    char* executable = strtok(command, " ");
+    char* arguments[10];
+    pid_t pid = fork();
+
+    int i = 0;
+
     if (command == NULL) {
         fprintf(stderr, "Error: Unexpected end of input\n");
         exit(EXIT_FAILURE);
     }
 
-    /* Split the command into executable and arguments */
-    char* executable = strtok(command, " ");
-    char* arguments[10];
-
-    int i = 0;
-    while (i < 9 && (arguments[i] = strtok(NULL, " ")) != NULL) {
+    while (i < 9 && (arguments[i] = strtok(NULL, " ")) != NULL) 
+    {
         i++;
     }
     arguments[i] = NULL; /* Null-terminate the argument list */
 
-    pid_t pid = fork();
-
-    if (pid == -1) {
+    if (pid == -1) 
+    {
         perror("Error forking process");
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
@@ -39,7 +41,8 @@ void executeCommand(char* command) {
         int status;
         waitpid(pid, &status, 0);
 
-        if (WIFEXITED(status)) {
+        if (WIFEXITED(status)) 
+        {
             int exitCode = WEXITSTATUS(status);
             if (exitCode != 0) {
                 fprintf(stderr, "Command exited with code %d\n", exitCode);
