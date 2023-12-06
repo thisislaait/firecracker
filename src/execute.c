@@ -105,6 +105,7 @@ void executeCommand(char *command)
 			if (access(full_path, X_OK) == 0)
 			{
 				/* Executable found in the current PATH */
+				executeChild(full_path, argv);
 			}
 
 			free(full_path);
