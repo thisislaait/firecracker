@@ -24,7 +24,6 @@ void executeCommand(char *command)
     pid_t pid;
 
     int i = 0;
-    int j;
 
     if (command == NULL)
     {
@@ -76,7 +75,5 @@ void executeCommand(char *command)
             fprintf(stderr, "Command did not exit successfully\n");
         }
     }
-}
-
 }
 
