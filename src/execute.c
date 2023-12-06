@@ -23,7 +23,7 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
 		fprintf(stderr, "Error: Unexpected end of input\n");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok_r(command, " ");
+	token = strtok_r(command, " ", &saveptr);
 	while (token != NULL && i < maxArgs - 1)
 	{
 		argv[i++] = token;
