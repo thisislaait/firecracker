@@ -15,7 +15,6 @@
 static void splitCommand(char *command, char *argv[], int maxArgs)
 {
 	char *token;
-	char *saveptr;
 	int i = 0;
 
 	if (command == NULL)
@@ -23,11 +22,11 @@ static void splitCommand(char *command, char *argv[], int maxArgs)
 		fprintf(stderr, "Error: Unexpected end of input\n");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok_r(command, " ", &saveptr);
+	token = strtok(command, " ");
 	while (token != NULL && i < maxArgs - 1)
 	{
 		argv[i++] = token;
-		token = strtok_r(NULL, " ", &saveptr);
+		token = strtok(NULL, " ");
 	}
 	argv[i] = NULL; /* Null-terminate the argument list */
 }
@@ -69,45 +68,7 @@ static void executeParent(pid_t pid)
 	}
 }
 
-/**
- * searchAndExecute - Searches for the executable in the PATH.
- * @command: The command to execute.
-*/
-static void searchAndExecute(char *command)
-{
-	char *path = getenv("PATH");
-	char *token = strtok(path, ":");
-	char *fullPath;
-	char *argv[20];
 
-	while (token != NULL)
-	{
-		fullPath = malloc(strlen(token) + strlen(command) + 2);
-		if (fullPath == NULL)
-		{
-			perror("Malloc failed");
-			exit(EXIT_FAILURE);
-		}
-
-		strcpy(fullPath, token);
-		strcat(fullPath, "/");
-		strcat(fullPath, command);
-
-		if (access(fullPath, X_OK) == 0)
-		{
-			splitCommand(fullPath, argv, 20);
-			executeChild(argv);
-			free(fullPath);
-			return;
-		}
-
-		free(fullPath);
-		token = strtok(NULL, ":");
-	}
-
-	fprintf(stderr, "Command not found: %s\n", command);
-	exit(EXIT_FAILURE);
-}
 
 /**
  * executeCommand - Executes a shell command.
@@ -120,7 +81,10 @@ static void searchAndExecute(char *command)
  */
 void executeCommand(char *command)
 {
+	char *argv[20]; /* Adjust the array size as needed */
 	pid_t pid;
+
+	splitCommand(command, argv, 20);
 
 	pid = fork();
 	if (pid == -1)
@@ -131,7 +95,7 @@ void executeCommand(char *command)
 	else if (pid == 0)
 	{
 		/* Child process */
-		searchAndExecute(command);
+		executeChild(argv);
 	}
 	else
 	{
@@ -139,4 +103,3 @@ void executeCommand(char *command)
 		executeParent(pid);
 	}
 }
-
