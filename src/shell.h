@@ -5,6 +5,8 @@
 #define ANSI_COLOR_GREEN "\x1b[32m"
 #define ANSI_COLOR_RED "\x1b[31m"
 
+#include <sys/types.h>
+
 extern char **environ;
 
 void initializeShell(void);

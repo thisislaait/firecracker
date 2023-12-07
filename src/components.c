@@ -33,7 +33,6 @@ void splitCommand(char *command, char *argv[], int maxArgs)
 
 /**
  * executeChild - Executes the command in the child process.
- * @full_path: The full path to the executable.
  * @argv: The array of arguments.
  */
 void executeChild(char *argv[])
