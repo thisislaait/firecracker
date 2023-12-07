@@ -46,7 +46,7 @@ static void executeChild(char *argv[])
 /**
  * executeParent - Waits for the child process to complete.
  * @pid: The process ID of the child.
- */
+ 
 static void executeParent(pid_t pid)
 {
     int status;
@@ -65,7 +65,7 @@ static void executeParent(pid_t pid)
     {
         fprintf(stderr, "Command did not exit successfully\n");
     }
-}
+}*/
 
 /**
  * searchAndExecute - Searches for the executable in the PATH.
@@ -120,7 +120,9 @@ void executeCommand(char *command)
     /*Check if the command exists in the PATH*/
     if (access(command, X_OK) == 0)
     {
-		char *argv[2] = {command, NULL};
+		char *argv[2];
+		argv[0] = command;
+		argv[1] = NULL;
         executeChild(argv);
         return;
     }
