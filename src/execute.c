@@ -7,6 +7,20 @@
 #include "shell.h"
 
 /**
+ * env_builtin - Implementation of the
+ * 'env' built in command.
+*/
+void env_builtin(void)
+{
+	extern char **environ;
+
+	for (char **env = environ; *env != NULL; env++)
+	{
+		printf("%s\n", *env);
+	}
+}
+
+/**
  * splitCommand - Tokenizes the command into executable and arguments.
  * @command: The command to split.
  * @argv: The array to store the tokens.
@@ -127,34 +141,41 @@ static void searchAndExecute(char *command, char *argv[])
  */
 void executeCommand(char *command)
 {
-    char *argv[20]; /* Adjust the array size as needed */
-    pid_t pid;
+	if (strcmp(command, "env") == 0)
+	{
+		env_builtin();
+	}
+	else
+	{
+		char *argv[20]; /* Adjust the array size as needed */
+		pid_t pid;
 
-    splitCommand(command, argv, 20);
+		splitCommand(command, argv, 20);
 
-    if (strchr(argv[0], '/') != NULL)
-    {
-        /*The command includes a path, execute directly*/
-        pid = fork();
-        if (pid == -1)
-        {
-            perror("Error forking process");
-            exit(EXIT_FAILURE);
-        }
-        else if (pid == 0)
-        {
-            /* Child process */
-            executeChild(argv);
-        }
-        else
-        {
-            /* Parent process */
-            executeParent(pid);
-        }
-    }
-    else
-    {
-        /*Search for the command in PATH*/
-        searchAndExecute(argv[0], argv);
-    }
+		if (strchr(argv[0], '/') != NULL)
+		{
+			/*The command includes a path, execute directly*/
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("Error forking process");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
+			{
+				/* Child process */
+				executeChild(argv);
+			}
+			else
+			{
+				/* Parent process */
+				executeParent(pid);
+			}
+		}
+		else
+		{
+			/*Search for the command in PATH*/
+			searchAndExecute(argv[0], argv);
+		}
+	}
 }

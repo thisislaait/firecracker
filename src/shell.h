@@ -9,5 +9,6 @@ void initializeShell(void);
 char *readInput(void);
 void executeCommand(char *command);
 void printPrompt(void);
+void env_builtin(void);
 
 #endif /* SHELL_H */
