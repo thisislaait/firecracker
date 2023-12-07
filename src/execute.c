@@ -117,7 +117,7 @@ static void searchAndExecute(char *command)
  */
 void executeCommand(char *command)
 {
-    // Check if the command exists in the PATH
+    /*Check if the command exists in the PATH*/
     if (access(command, X_OK) == 0)
     {
 		char *argv[2] = {command, NULL};
@@ -125,6 +125,6 @@ void executeCommand(char *command)
         return;
     }
 
-    // If not found in current directory, search in PATH
+    /* If not found in current directory, search in PATH*/
     searchAndExecute(command);
 }
