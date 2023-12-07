@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <termios.h>
 #include "shell.h"
 
 /**
@@ -9,5 +14,8 @@
  */
 void initializeShell(void)
 {
-	/* Initialization code, if needed */
+	struct termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag & = ~(ICANON | ECHO);
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
