@@ -22,10 +22,9 @@ int main(void)
 	{
 		printPrompt();
 		input = readInput();
-		if (feof(stdin))
+		if (input == NULL)
 
 		{
-			free(input);
 			printf(ANSI_COLOR_GREEN "Goodbye! Exiting the shell.\n"
 			    ANSI_COLOR_RESET);
 			break;
