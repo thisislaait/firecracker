@@ -15,6 +15,7 @@
 void splitCommand(char *command, char *argv[], int maxArgs)
 {
 	char *token;
+    char *saveptr;
 	int i = 0;
 
 	if (command == NULL)
@@ -22,12 +23,11 @@ void splitCommand(char *command, char *argv[], int maxArgs)
 		fprintf(stderr, "Error: Unexpected end of input\n");
 		exit(EXIT_FAILURE);
 	}
-	/*token = strtok(command, " ");*/
-	while ((token = strtok(command, " ") ) != NULL && i < maxArgs - 1)
+	token = strtok_r(command, " ", &saveptr);
+	while (token != NULL && i < maxArgs - 1)
 	{
 		argv[i++] = token;
-        command = NULL;
-		/*token = strtok(NULL, " ");*/
+		token = strtok_r(NULL, " ", &saveptr);
 	}
 	argv[i] = NULL; /* Null-terminate the argument list */
 }
