@@ -90,45 +90,43 @@ static void executeParent(pid_t pid)
  */
 static void searchAndExecute(char *command, char *argv[])
 {
-    char *path = getenv("PATH");
-    char *path_copy = strdup(path);
-    char *dir = strtok(path_copy, ":");
-    pid_t pid;
+	char *path = getenv("PATH");
+	char *path_copy = strdup(path);
+	char *dir = strtok(path_copy, ":");
+	pid_t pid;
 
-    while (dir != NULL)
-    {
-        char full_path[256]; 
-        snprintf(full_path, sizeof(full_path), "%s/%s", dir, command);
+	while (dir != NULL)
+	{
+		char full_path[256];
 
-        if (access(full_path, X_OK) == 0)
-        {
-            /*Found the executable in the current directory*/
-            pid = fork();
-            if (pid == -1)
-            {
-                perror("Error forking process");
-                exit(EXIT_FAILURE);
-            }
-            else if (pid == 0)
-            {
-                /* Child process */
-                executeChild(argv);
-            }
-            else
-            {
-                /* Parent process */
-                executeParent(pid);
-                free(path_copy);
-                return;
-            }
-        }
-
-        dir = strtok(NULL, ":");
-    }
-
-    /*If the command is not found in any directory*/
-    fprintf(stderr, "Command not found: %s\n", command);
-    free(path_copy);
+		snprintf(full_path, sizeof(full_path), "%s/%s", dir, command);
+		if (access(full_path, X_OK) == 0)
+		{
+			/*Found the executable in the current directory */
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("Error forking process");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
+			{
+				/* Child process */
+				executeChild(argv);
+			}
+			else
+			{
+				/* Parent process */
+				executeParent(pid);
+				free(path_copy);
+				return;
+			}
+		}
+		dir = strtok(NULL, ":");
+	}
+	/*If the command is not found in any directory*/
+	fprintf(stderr, "Command not found: %s\n", command);
+	free(path_copy);
 }
 
 /**
@@ -180,3 +178,4 @@ void executeCommand(char *command)
 		}
 	}
 }
+
