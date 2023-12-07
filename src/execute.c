@@ -68,7 +68,53 @@ static void executeParent(pid_t pid)
 	}
 }
 
+/**
+ * searchAndExecute - Search for the command in the PATH and execute it.
+ * @command: The command to execute.
+ * @argv: The array of arguments.
+ */
+static void searchAndExecute(char *command, char *argv[])
+{
+    char *path = getenv("PATH");
+    char *path_copy = strdup(path);
+    char *dir = strtok(path_copy, ":");
+    pid_t pid;
 
+    while (dir != NULL)
+    {
+        char full_path[256]; 
+        snprintf(full_path, sizeof(full_path), "%s/%s", dir, command);
+
+        if (access(full_path, X_OK) == 0)
+        {
+            /*Found the executable in the current directory*/
+            pid = fork();
+            if (pid == -1)
+            {
+                perror("Error forking process");
+                exit(EXIT_FAILURE);
+            }
+            else if (pid == 0)
+            {
+                /* Child process */
+                executeChild(argv);
+            }
+            else
+            {
+                /* Parent process */
+                executeParent(pid);
+                free(path_copy);
+                return;
+            }
+        }
+
+        dir = strtok(NULL, ":");
+    }
+
+    /*If the command is not found in any directory*/
+    fprintf(stderr, "Command not found: %s\n", command);
+    free(path_copy);
+}
 
 /**
  * executeCommand - Executes a shell command.
@@ -81,25 +127,34 @@ static void executeParent(pid_t pid)
  */
 void executeCommand(char *command)
 {
-	char *argv[20]; /* Adjust the array size as needed */
-	pid_t pid;
+    char *argv[20]; /* Adjust the array size as needed */
+    pid_t pid;
 
-	splitCommand(command, argv, 20);
+    splitCommand(command, argv, 20);
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("Error forking process");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		/* Child process */
-		executeChild(argv);
-	}
-	else
-	{
-		/* Parent process */
-		executeParent(pid);
-	}
+    if (strchr(argv[0], '/') != NULL)
+    {
+        /*The command includes a path, execute directly*/
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("Error forking process");
+            exit(EXIT_FAILURE);
+        }
+        else if (pid == 0)
+        {
+            /* Child process */
+            executeChild(argv);
+        }
+        else
+        {
+            /* Parent process */
+            executeParent(pid);
+        }
+    }
+    else
+    {
+        /*Search for the command in PATH*/
+        searchAndExecute(argv[0], argv);
+    }
 }
