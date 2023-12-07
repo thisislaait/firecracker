@@ -11,6 +11,10 @@ void initializeShell(void);
 char *readInput(void);
 void executeCommand(char *command);
 void printPrompt(void);
+void splitCommand(char *command, char *argv[], int maxArgs);
+void executeChild(char *argv[]);
+void executeParent(pid_t pid);
+void searchAndExecute(char *command, char *argv[]);
 void env_builtin(void);
 
 #endif /* SHELL_H */
