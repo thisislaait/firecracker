@@ -13,8 +13,9 @@
 void env_builtin(void)
 {
 	extern char **environ;
-
-	for (char **env = environ; *env != NULL; env++)
+	char **env;
+	/* Print each environment variable */
+	for (env = environ; *env != NULL; env++)
 	{
 		printf("%s\n", *env);
 	}
