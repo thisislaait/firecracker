@@ -12,7 +12,6 @@
 */
 void env_builtin(void)
 {
-	extern char **environ;
 	char **env;
 	/* Print each environment variable */
 	for (env = environ; *env != NULL; env++)
